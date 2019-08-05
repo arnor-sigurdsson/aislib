@@ -1,0 +1,31 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = "*"
+tox = "*"
+flake8 = "*"
+jupyter = "*"
+ipykernel = "*"
+sphinx = "*"
+coverage = "*"
+snakeviz = "*"
+pytest-cov = "*"
+pynvim = "*"
+visidata = "*"
+
+[packages]
+pandas = "*"
+numpy = "*"
+torch = "==1.1.0"
+torchvision = "*"
+py = "*"
+matplotlib = "==3.1.0"
+scikit-learn = "*"
+seaborn = "*"
+aislib = {editable = true,path = "."}
+
+[requires]
+python_version = "3.7"
