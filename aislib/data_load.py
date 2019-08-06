@@ -84,6 +84,22 @@ def load_np_packbits_from_folder(folder: Path,
     return np.array(obs_array), ids_list
 
 
+def load_np_arrays_from_folder(folder: Path,
+                               dtype: type = np.float
+                               ) -> np.ndarray:
+    """
+    Loads numpy arrays from a given folder.
+
+    :param folder: Which folder to load arrays from.
+    :param dtype: Data type to cast samples to.
+    :return: Array of elements loaded from the folder.
+    """
+    obs_array = np.array(
+        [np.load(i).astype(dtype) for i in folder.iterdir()]
+    )
+    return obs_array
+
+
 def get_labels_from_folder(folder: Path,
                            delimiter: str = '_',
                            position: int = 1
@@ -128,19 +144,3 @@ def get_labels_from_iterable(iterable: Iterable[str],
         label_list.append(label)
 
     return label_list
-
-
-def load_np_arrays_from_folder(folder: Path,
-                               dtype: type = np.float
-                               ) -> np.ndarray:
-    """
-    Loads numpy arrays from a given folder.
-
-    :param folder: Which folder to load arrays from.
-    :param dtype: Data type to cast samples to.
-    :return: Array of elements loaded from the folder.
-    """
-    obs_array = np.array(
-        [np.load(i).astype(dtype) for i in folder.iterdir()]
-    )
-    return obs_array
