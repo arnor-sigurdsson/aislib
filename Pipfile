@@ -15,6 +15,7 @@ snakeviz = "*"
 pytest-cov = "*"
 pynvim = "*"
 visidata = "*"
+coverage-badge = "*"
 
 [packages]
 pandas = "*"

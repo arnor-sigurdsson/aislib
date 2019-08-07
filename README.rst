@@ -1,7 +1,11 @@
 aislib
 ======
 
-Various code I snippets / functions I have found useful.
+.. raw:: html
+     :file: docs/coverage.svg
+
+| Various code snippets / functions I have found useful.
+
 
 Usage
 -----
