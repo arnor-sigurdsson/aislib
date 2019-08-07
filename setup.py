@@ -23,7 +23,7 @@ setup(
     author_email="",
 
     description="Various code I snippets / functions I have found useful.",
-    long_description=read("README.rst"),
+    long_description=read("README.md"),
 
     packages=find_packages(exclude=('tests',)),
 
