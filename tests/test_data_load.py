@@ -16,7 +16,7 @@ def create_test_arr_files(request, tmp_path):
             return x
 
     for i in range(10):
-        np.save(tmp_path / f'{i}.npy', hook(test_arr_base))
+        np.save(tmp_path / f'{i}_-_label.npy', hook(test_arr_base))
 
     return tmp_path, test_arr_base
 
@@ -60,7 +60,7 @@ def test_load_np_packbits_from_folder(create_test_arr_files):
     for arr in loaded_arrs:
         np.testing.assert_array_equal(arr, arr_base)
 
-    assert sorted(loaded_ids) == [str(i) for i in range(10)]
+    assert sorted(loaded_ids) == [str(i) + '_-_label' for i in range(10)]
 
 
 def test_load_np_arrays_from_folder(create_test_arr_files):
@@ -73,9 +73,26 @@ def test_load_np_arrays_from_folder(create_test_arr_files):
         np.testing.assert_array_equal(arr, arr_base)
 
 
-def test_get_labels_from_folder():
-    pass
+def test_get_labels_from_folder(create_test_arr_files):
+    arr_path, _ = create_test_arr_files
+
+    labels = data_load.get_labels_from_folder(arr_path,
+                                              '_-_', )
+    assert set(labels) == {'label'}
 
 
 def test_get_labels_from_iterable():
-    pass
+    test_label_list_1 = [f'{i}_-_label' for i in range(10)]
+
+    labels_1 = data_load.get_labels_from_iterable(test_label_list_1,
+                                                  '_-_')
+
+    assert set(labels_1) == {'label'}
+
+    test_label_list_2 = [f'{i}_-_some_info_-_label' for i in range(10)]
+
+    labels_2 = data_load.get_labels_from_iterable(test_label_list_2,
+                                                  '_-_',
+                                                  2)
+
+    assert set(labels_2) == {'label'}
