@@ -16,6 +16,7 @@ pytest-cov = "*"
 pynvim = "*"
 visidata = "*"
 coverage-badge = "*"
+pre-commit = "*"
 
 [packages]
 pandas = "*"
