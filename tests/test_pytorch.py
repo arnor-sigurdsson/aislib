@@ -6,7 +6,6 @@ from aislib import pytorch
 
 def test_calc_size_after_conv_sequence():
     class SimpleBlock(nn.Module):
-
         def __init__(self):
             super().__init__()
 
@@ -27,12 +26,10 @@ def test_calc_size_after_conv_sequence():
         pytorch.calc_size_after_conv_sequence(224, conv_seq_bad)
 
 
-@pytest.mark.parametrize('test_input,expected', [
-    ((1000, 10, 4), 3),
-    ((250, 4, 4), 1),
-    ((1001, 11, 2), 5),
-    ((1001, 11, 1), 5),
-])
+@pytest.mark.parametrize(
+    "test_input,expected",
+    [((1000, 10, 4), 3), ((250, 4, 4), 1), ((1001, 11, 2), 5), ((1001, 11, 1), 5)],
+)
 def test_calc_conv_padding_needed_pass(test_input, expected):
     assert pytorch.calc_conv_padding_needed(*test_input) == expected
 

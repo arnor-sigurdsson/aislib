@@ -14,16 +14,14 @@ def get_logger(name: str) -> logging.Logger:
 
     handler = logging.StreamHandler()
     formatter = logging.Formatter(
-        '%(asctime)s - %(levelname)s - %(name)s - %(message)s',
-        '%H:%M:%S')
+        "%(asctime)s - %(levelname)s - %(name)s - %(message)s", "%H:%M:%S"
+    )
     handler.setFormatter(formatter)
     logger_.addHandler(handler)
     return logger_
 
 
-def ensure_path_exists(path: Path,
-                       is_folder: bool = False
-                       ) -> Path:
+def ensure_path_exists(path: Path, is_folder: bool = False) -> Path:
     """
     Small utility function to ensure a path exists before trying to save a file.
 
@@ -33,7 +31,7 @@ def ensure_path_exists(path: Path,
     :return: The generated path the function just created.
     """
     if not is_folder:
-        path = Path('/'.join(path.parts[:-1]))
+        path = Path("/".join(path.parts[:-1]))
 
     path.mkdir(parents=True, exist_ok=True)
 

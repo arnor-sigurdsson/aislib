@@ -8,12 +8,13 @@ from .misc_utils import get_logger
 logger = get_logger(__name__)
 
 
-def iter_loadtxt(filename: str,
-                 delimiter: str = ' ',
-                 skiprows: int = 0,
-                 dtype: type = int,
-                 custom_splitter: Callable = None
-                 ) -> np.ndarray:
+def iter_loadtxt(
+    filename: str,
+    delimiter: str = " ",
+    skiprows: int = 0,
+    dtype: type = int,
+    custom_splitter: Callable = None,
+) -> np.ndarray:
     """
     Used to quickly and memory-efficiently load a file into a np array.
 
@@ -26,7 +27,7 @@ def iter_loadtxt(filename: str,
     """
 
     def iter_func():
-        with open(filename, 'r') as infile:
+        with open(filename, "r") as infile:
             for _ in range(skiprows):
                 next(infile)
             for line in infile:
@@ -46,11 +47,9 @@ def iter_loadtxt(filename: str,
     return data
 
 
-def load_np_packbits_from_folder(folder: Path,
-                                 input_height: int,
-                                 dtype: type = np.bool,
-                                 verbose: bool = False
-                                 ) -> Tuple[np.ndarray, List[str]]:
+def load_np_packbits_from_folder(
+    folder: Path, input_height: int, dtype: type = np.bool, verbose: bool = False
+) -> Tuple[np.ndarray, List[str]]:
     """
     Note that it is faster to allocate np arrays to a python list first and then
     convert that to a np.array, as adding iteratively to a np array seems to
@@ -67,7 +66,7 @@ def load_np_packbits_from_folder(folder: Path,
     ids_list = []
 
     if verbose:
-        logger.info('Loading samples from %s', folder)
+        logger.info("Loading samples from %s", folder)
     for idx, raw_obs_path in enumerate(Path(folder).iterdir()):
 
         unpacked_obs = np.unpackbits(np.load(raw_obs_path)).astype(dtype)
@@ -78,15 +77,13 @@ def load_np_packbits_from_folder(folder: Path,
 
         if verbose:
             if (idx + 1) % 2000 == 0:
-                logger.info('Loaded %d observations into memory.', idx + 1)
+                logger.info("Loaded %d observations into memory.", idx + 1)
 
-    logger.info('All samples loaded.')
+    logger.info("All samples loaded.")
     return np.array(obs_array), ids_list
 
 
-def load_np_arrays_from_folder(folder: Path,
-                               dtype: type = np.float
-                               ) -> np.ndarray:
+def load_np_arrays_from_folder(folder: Path, dtype: type = np.float) -> np.ndarray:
     """
     Loads numpy arrays from a given folder.
 
@@ -94,16 +91,13 @@ def load_np_arrays_from_folder(folder: Path,
     :param dtype: Data type to cast samples to.
     :return: Array of elements loaded from the folder.
     """
-    obs_array = np.array(
-        [np.load(i).astype(dtype) for i in folder.iterdir()]
-    )
+    obs_array = np.array([np.load(i).astype(dtype) for i in folder.iterdir()])
     return obs_array
 
 
-def get_labels_from_folder(folder: Path,
-                           delimiter: str = '_',
-                           position: int = 1
-                           ) -> List[str]:
+def get_labels_from_folder(
+    folder: Path, delimiter: str = "_", position: int = 1
+) -> List[str]:
     """
     Used to extract labels from files in folder, assuming the labels are in the
     filename.
@@ -117,16 +111,15 @@ def get_labels_from_folder(folder: Path,
     label_list = []
     for obs_file in Path(folder).iterdir():
         label = obs_file.stem.split(delimiter)[position:]
-        label = '_'.join(label)
+        label = "_".join(label)
         label_list.append(label)
 
     return label_list
 
 
-def get_labels_from_iterable(iterable: Iterable[str],
-                             delimiter: str = '_',
-                             position: int = 1
-                             ) -> List[str]:
+def get_labels_from_iterable(
+    iterable: Iterable[str], delimiter: str = "_", position: int = 1
+) -> List[str]:
     """
     Used to extract labels from iterable of strings, assumes labels are in the
     iterable elements.
@@ -140,7 +133,7 @@ def get_labels_from_iterable(iterable: Iterable[str],
 
     for item in iterable:
         label = item.split(delimiter)[position:]
-        label = '_'.join(label)
+        label = "_".join(label)
         label_list.append(label)
 
     return label_list
