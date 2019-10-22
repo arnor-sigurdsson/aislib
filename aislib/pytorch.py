@@ -56,7 +56,7 @@ def calc_conv_padding_needed(input_width: int,
                          f'following args passed in: {locals()}.')
 
     p = Symbol('p')
-    target_width = int(round((input_width / stride)))
+    target_width = int((input_width / stride) + 0.5)
     padding = solve(
         ((input_width - kernel_size + 2 * p) / stride + 1) - target_width, p)
 

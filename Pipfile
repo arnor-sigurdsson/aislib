@@ -20,7 +20,7 @@ coverage-badge = "*"
 [packages]
 pandas = "*"
 numpy = "*"
-torch = "==1.1.0"
+torch = "*"
 torchvision = "*"
 py = "*"
 matplotlib = "==3.1.0"
