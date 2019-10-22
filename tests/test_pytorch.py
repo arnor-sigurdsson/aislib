@@ -29,7 +29,8 @@ def test_calc_size_after_conv_sequence():
 
 @pytest.mark.parametrize('test_input,expected', [
     ((1000, 10, 4), 3),
-    ((1001, 11, 2), 4),
+    ((250, 4, 4), 1),
+    ((1001, 11, 2), 5),
     ((1001, 11, 1), 5),
 ])
 def test_calc_conv_padding_needed_pass(test_input, expected):
