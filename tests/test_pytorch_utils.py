@@ -30,10 +30,11 @@ def test_calc_size_after_conv_sequence():
     "test_input,expected",
     [
         ((1000, 10, 4, 1), 3),
-        ((1000, 10, 4, 3), 3),
+        ((1000, 10, 4, 3), 12),
         ((250, 4, 4, 1), 1),
         ((1001, 11, 2, 1), 5),
         ((1001, 11, 1, 1), 5),
+        ((1001, 11, 4, 2), 8),
     ],
 )
 def test_calc_conv_padding_needed_pass(test_input, expected):
