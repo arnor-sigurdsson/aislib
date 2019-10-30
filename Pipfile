@@ -29,6 +29,7 @@ scikit-learn = "*"
 seaborn = "*"
 aislib = {editable = true,path = "."}
 sympy = "*"
+tqdm = "*"
 
 [requires]
 python_version = "3.7"
