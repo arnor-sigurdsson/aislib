@@ -1,7 +1,7 @@
 import pytest
 from torch import nn
 
-from aislib import pytorch
+from aislib import pytorch_utils
 
 
 def test_calc_size_after_conv_sequence():
@@ -17,23 +17,29 @@ def test_calc_size_after_conv_sequence():
             return self.act(self.bn(self.conv(x)))
 
     conv_seq = nn.Sequential(*[SimpleBlock()] * 3)
-    size = pytorch.calc_size_after_conv_sequence(224, conv_seq)
+    size = pytorch_utils.calc_size_after_conv_sequence(224, conv_seq)
 
     assert size == 28
 
     conv_seq_bad = nn.Sequential(*[SimpleBlock()] * 10)
     with pytest.raises(ValueError):
-        pytorch.calc_size_after_conv_sequence(224, conv_seq_bad)
+        pytorch_utils.calc_size_after_conv_sequence(224, conv_seq_bad)
 
 
 @pytest.mark.parametrize(
     "test_input,expected",
-    [((1000, 10, 4), 3), ((250, 4, 4), 1), ((1001, 11, 2), 5), ((1001, 11, 1), 5)],
+    [
+        ((1000, 10, 4, 1), 3),
+        ((1000, 10, 4, 3), 3),
+        ((250, 4, 4, 1), 1),
+        ((1001, 11, 2, 1), 5),
+        ((1001, 11, 1, 1), 5),
+    ],
 )
 def test_calc_conv_padding_needed_pass(test_input, expected):
-    assert pytorch.calc_conv_padding_needed(*test_input) == expected
+    assert pytorch_utils.calc_conv_padding_needed(*test_input) == expected
 
 
 def test_calc_padding_needed_fail():
     with pytest.raises(ValueError):
-        pytorch.calc_conv_padding_needed(-1000, 10, 4)
+        pytorch_utils.calc_conv_padding_needed(-1000, 10, 4, 1)
