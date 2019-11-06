@@ -18,7 +18,7 @@ class TQDMLoggingHandler(logging.Handler):
             self.handleError(record)
 
 
-def get_logger(name: str, tqdm_compatible: bool = True) -> logging.Logger:
+def get_logger(name: str, tqdm_compatible: bool = False) -> logging.Logger:
     """
     Creates a logger with a debug level and a custom format.
 
