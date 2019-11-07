@@ -38,14 +38,13 @@ def plink_raw_to_one_hot(
         # skip header
         infile.readline()
         for idx, line in enumerate(infile):
-            line = line.replace("NA", "9")
             line = line.strip().split(" ")
 
-            # grab IID
             sample_id = line[1]
 
-            genotype = np.array(line[6:], dtype=np.uint8)
-            # assert len(genotype) == expected_length
+            genotype = line[6:]
+            genotype = ["9" if i == "NA" else i for i in genotype]
+            genotype = np.array(genotype, dtype=np.uint8)
 
             encoded_sequence = encoder.transform(genotype.reshape(-1, 1)).toarray().T
             encoded_sequence = encoded_sequence.astype(np.uint8)

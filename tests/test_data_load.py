@@ -85,3 +85,12 @@ def test_get_labels_from_iterable():
     labels_2 = data_load.get_labels_from_iterable(test_label_list_2, "_-_", 2)
 
     assert set(labels_2) == {"label"}
+
+
+def test_files_to_train_test_incides(create_test_arr_files):
+    arr_path, _ = create_test_arr_files
+
+    train_idxs, test_idxs = data_load.files_to_train_test_incides(arr_path, 0.9)
+
+    assert len(train_idxs) == 9
+    assert len(test_idxs) == 1
