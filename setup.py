@@ -23,7 +23,7 @@ setup(
     description="Various code I snippets / functions I have found useful.",
     long_description=read("README.md"),
     packages=find_packages(exclude=("tests",)),
-    install_requires=["tqdm", "numpy", "torch", "sympy", "sklearn"],
+    install_requires=["tqdm", "numpy", "torch==1.3.0", "sympy", "sklearn"],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "License :: OSI Approved :: MIT License",
