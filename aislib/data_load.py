@@ -137,3 +137,18 @@ def get_labels_from_iterable(
         label_list.append(label)
 
     return label_list
+
+
+def files_to_train_test_incides(
+    input_path: Path, percent_train: float = 0.9, sample_suffix=".npy"
+) -> Tuple[np.ndarray, np.ndarray]:
+    no_obs = 0
+    for i in input_path.iterdir():
+        if i.suffix == sample_suffix:
+            no_obs += 1
+
+    indices = np.random.permutation(no_obs)
+    no_train = int(percent_train * no_obs)
+    train_idxs, test_idxs = indices[:no_train], indices[no_train:]
+
+    return train_idxs, test_idxs
