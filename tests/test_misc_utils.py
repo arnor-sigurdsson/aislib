@@ -1,4 +1,17 @@
 from aislib import misc_utils
+import logging
+
+
+def test_get_logger():
+    logger_basic = misc_utils.get_logger("logger_basic")
+    assert logger_basic.level == 10
+    assert len(logger_basic.handlers) == 1
+    assert isinstance(logger_basic.handlers[0], logging.StreamHandler)
+
+    logger_tqdm = misc_utils.get_logger("logger_tqdm", tqdm_compatible=True)
+    assert logger_tqdm.level == 10
+    assert len(logger_tqdm.handlers) == 1
+    assert isinstance(logger_tqdm.handlers[0], misc_utils.TQDMLoggingHandler)
 
 
 def test_ensure_path_exists(tmp_path):
