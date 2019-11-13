@@ -86,7 +86,7 @@ def plink_bed_to_one_hot(
     TODO: Refactor to avoid repeated code with `plink_raw_to_one_hot`.
     """
 
-    genotype_matrix = read_plink1_bin(bed=str(bed_fpath))
+    genotype_matrix = read_plink1_bin(bed=str(bed_fpath), verbose=False)
 
     samples = genotype_matrix.sample.values
 
