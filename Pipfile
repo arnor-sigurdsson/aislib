@@ -30,6 +30,7 @@ seaborn = "*"
 aislib = {editable = true,path = "."}
 sympy = "*"
 tqdm = "*"
+pandas-plink = "*"
 
 [requires]
 python_version = "3.7"
