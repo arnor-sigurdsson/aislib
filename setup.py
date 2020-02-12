@@ -26,7 +26,7 @@ setup(
     install_requires=[
         "tqdm",
         "numpy",
-        "torch==1.3.0",
+        "torch>=1.0.0",
         "sympy",
         "sklearn",
         "pandas-plink",
