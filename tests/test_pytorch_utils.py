@@ -28,19 +28,27 @@ def test_calc_size_after_conv_sequence():
 
 @pytest.mark.parametrize(
     "test_input,expected",
-    [
-        ((1000, 10, 4, 1), 3),
-        ((1000, 10, 4, 3), 12),
-        ((250, 4, 4, 1), 1),
-        ((1001, 11, 2, 1), 5),
-        ((1001, 11, 1, 1), 5),
-        ((1001, 11, 4, 2), 8),
+    [  # Even input and kernel
+        ((1000, 10, 4, 1), (10, 3)),
+        ((1000, 10, 4, 3), (10, 12)),
+        ((250, 4, 4, 1), (4, 1)),
+        # Odd input, odd kernel
+        ((1001, 11, 2, 1), (11, 5)),
+        ((1001, 11, 1, 1), (11, 5)),
+        ((1001, 11, 4, 2), (11, 10)),
+        # Odd input, mixed kernels
+        ((1001, 11, 11, 1), (11, 0)),
+        ((1001, 10, 10, 1), (9, 4)),
+        ((1001, 11, 3, 2), (11, 11)),
     ],
 )
 def test_calc_conv_padding_needed_pass(test_input, expected):
-    assert pytorch_utils.calc_conv_padding_needed(*test_input) == expected
+    kernel_size, padding = pytorch_utils.calc_conv_params_needed(*test_input)
+
+    assert kernel_size == expected[0]
+    assert padding == expected[1]
 
 
 def test_calc_padding_needed_fail():
     with pytest.raises(ValueError):
-        pytorch_utils.calc_conv_padding_needed(-1000, 10, 4, 1)
+        pytorch_utils.calc_conv_params_needed(-1000, 10, 4, 1)

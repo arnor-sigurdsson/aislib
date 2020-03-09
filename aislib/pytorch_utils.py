@@ -1,6 +1,9 @@
-from torch import nn
+import math
+from typing import Tuple, Union
+
 from sympy import Symbol
 from sympy.solvers import solve
+from torch import nn
 
 
 def calc_size_after_conv_sequence(
@@ -11,10 +14,7 @@ def calc_size_after_conv_sequence(
     connected layer after encoding.
 
     TODO:
-        - Currently we raise ``ValueError`` if calculated size is 0 according
-          after sequentally applying the conv size function calculation.
-          Possibly we could do ``current_size = max(current_size, 1)``?
-        - Make this function more general / robust.
+       - Make this function more general / robust.
 
     :param input_width: Input width before going through convolutions.
     :param conv_sequence: Sequence of convolutions applied to input.
@@ -22,10 +22,17 @@ def calc_size_after_conv_sequence(
     :return: The width of each channel after all convolutions.
     """
 
-    def calc_output_size(size, layer):
-        return (
-            size - layer.kernel_size[axis] + 2 * layer.padding[axis]
-        ) / layer.stride[axis] + 1
+    def _calc_output_size(size: int, layer: nn.Module):
+        kernel_size = layer.kernel_size[axis]
+        padding = layer.padding[axis]
+        stride = layer.stride[axis]
+        dilation = layer.dilation[axis]
+
+        output_size = (
+            (size + (2 * padding) - dilation * (kernel_size - 1) - 1) / stride
+        ) + 1
+
+        return output_size
 
     current_size = input_width
     for block in conv_sequence:
@@ -37,7 +44,7 @@ def calc_size_after_conv_sequence(
         for operation in conv_operations:
             conv_layer = vars(block)["_modules"][operation]
 
-            current_size = calc_output_size(current_size, conv_layer)
+            current_size = _calc_output_size(size=current_size, layer=conv_layer)
 
     if int(current_size) == 0:
         raise ValueError(
@@ -48,22 +55,46 @@ def calc_size_after_conv_sequence(
     return int(round(current_size))
 
 
-def calc_conv_padding_needed(
+def calc_conv_params_needed(
     input_width: int, kernel_size: int, stride: int, dilation: int
-):
+) -> Tuple[int, int]:
 
-    if [i for i in locals().values() if i < 0]:
-        raise ValueError(
-            f"Got negative value when expected positive in the"
-            f"following args passed in: {locals()}."
-        )
+    if input_width < 0:
+        raise ValueError("Got negative size for input width: %d", input_width)
 
-    p = Symbol("p")
-    target_width = int((input_width / stride) + 0.5)
+    target_width = math.ceil((input_width / stride))
+
+    for t_width in [target_width, target_width + 1]:
+        for k_size in [kernel_size, kernel_size - 1]:
+            padding = _solve_for_padding(
+                input_width=input_width,
+                target_width=t_width,
+                dilation=dilation,
+                stride=stride,
+                kernel_size=k_size,
+            )
+
+            if padding is not None:
+                assert isinstance(padding, int)
+                return k_size, padding
+
+    raise AssertionError(
+        f"Could not find a solution for padding with the supplied conv "
+        f"parameters: {locals()}."
+    )
+
+
+def _solve_for_padding(
+    input_width: int, target_width: int, dilation: int, stride: int, kernel_size: int
+) -> Union[int, None]:
+    p = Symbol("p", integer=True)
     padding = solve(
         ((input_width + (2 * p) - dilation * (kernel_size - 1) - 1) / stride + 1)
         - target_width,
         p,
     )
 
-    return padding[0]
+    if len(padding) > 0:
+        return int(padding[0])
+
+    return None
