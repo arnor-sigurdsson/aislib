@@ -89,7 +89,8 @@ class AdaHessian(torch.optim.Optimizer):
             raise ValueError(f"Invalid Hessian power value: {hessian_power}")
         if not auto_hessian and update_each > 1:
             raise ValueError(
-                f"Delayed hessian update is not supported for manual updates, delay: {update_each}"
+                f"Delayed hessian update is not supported for manual updates, "
+                f"delay: {update_each}"
             )
 
         self.update_each = update_each
