@@ -52,7 +52,7 @@ def calc_size_after_conv_sequence(
             "check the number of convolutions and their params."
         )
 
-    return int(round(current_size))
+    return int(current_size)
 
 
 def calc_conv_params_needed(
