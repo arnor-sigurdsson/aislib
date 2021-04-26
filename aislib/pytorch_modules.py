@@ -51,7 +51,7 @@ class Mish(Module):
         return mish(input)
 
 
-@torch.jit.script
+@torch.jit._script_if_tracing
 def mish(input):
     """
     Applies the mish function element-wise:
