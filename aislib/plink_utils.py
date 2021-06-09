@@ -3,6 +3,7 @@ from typing import Union
 
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder
+from pandas_plink import read_plink1_bin
 
 from aislib.misc_utils import get_logger
 
@@ -64,3 +65,53 @@ def plink_raw_to_one_hot(
 
             if idx % log_interval == 0:
                 logger.info("Converted %d samples to final format.", idx)
+
+
+def plink_bed_to_one_hot(
+    bed_fpath: Path,
+    output_folder: Union[str, Path],
+    encoder: OneHotEncoder,
+    log_interval: int = 2000,
+) -> None:
+    """
+    Takes in a file where each line is a SNP profile for an individual. Converts
+    the sequence to one-hot vectors.  Currently uses a hard-coded mapping,
+    [0, 1, 2, 9] for the SNPs, but easy to add as an argument later.
+
+    :param bed_fpath: Path to bed file.
+    :param output_folder: Where to save the one hot encoded sequences.
+    :param encoder: Encoder object to encode the sequences with.
+    :param log_interval: Interval of processed observations to log no processed.
+
+    TODO: Refactor to avoid repeated code with `plink_raw_to_one_hot`.
+    """
+
+    genotype_matrix = read_plink1_bin(bed=str(bed_fpath), verbose=False)
+
+    samples = genotype_matrix.sample.values
+
+    for idx, sample_id in enumerate(samples):
+        genotype = genotype_matrix.sel(sample=sample_id).values
+        nan_mask = np.isnan(genotype)
+        genotype[nan_mask] = 9
+
+        genotype = genotype.astype(dtype=np.uint8)
+
+        encoded_sequence = encoder.transform(genotype.reshape(-1, 1)).toarray().T
+        encoded_sequence = encoded_sequence.astype(np.uint8)
+
+        # check that one hot is correct format
+        assert (encoded_sequence.sum(axis=0) != 1).sum() == 0
+
+        cur_outpath = output_folder / f"{sample_id}.npy"
+        if cur_outpath.exists():
+            raise FileExistsError(
+                f"It seems that there are duplicated IIDs in {bed_fpath},"
+                f"please make sure they are unique to avoid "
+                f"overwriting sample arrays."
+            )
+
+        np.save(cur_outpath, encoded_sequence)
+
+        if idx % log_interval == 0:
+            logger.info("Converted %d samples to final format.", idx)
