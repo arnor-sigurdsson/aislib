@@ -17,4 +17,4 @@ Various code snippets / functions I have found useful.
 
 ## Authors
 
-`aislib` was written by [Arnor Ingi Sigurdsson]()
+`aislib` was written by [Arnor Ingi Sigurdsson](https://github.com/arnor-sigurdsson)

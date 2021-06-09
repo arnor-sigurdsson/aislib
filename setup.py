@@ -19,7 +19,6 @@ setup(
     url="git@github.com:arnor-sigurdsson/aislib.git",
     license="MIT",
     author="Arnor Ingi Sigurdsson",
-    author_email="",
     description="Various code I snippets / functions I have found useful.",
     long_description=read("README.md"),
     packages=find_packages(exclude=("tests",)),
