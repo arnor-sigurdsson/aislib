@@ -1,0 +1,3 @@
+[run]
+omit = 
+    aislib/pytorch_modules.py

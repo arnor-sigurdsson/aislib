@@ -48,7 +48,7 @@ def iter_loadtxt(
 
 
 def load_np_packbits_from_folder(
-    folder: Path, input_height: int, dtype: type = np.bool, verbose: bool = False
+    folder: Path, input_height: int, dtype: type = bool, verbose: bool = False
 ) -> Tuple[np.ndarray, List[str]]:
     """
     Note that it is faster to allocate np arrays to a python list first and then
@@ -83,7 +83,7 @@ def load_np_packbits_from_folder(
     return np.array(obs_array), ids_list
 
 
-def load_np_arrays_from_folder(folder: Path, dtype: type = np.float) -> np.ndarray:
+def load_np_arrays_from_folder(folder: Path, dtype: type = float) -> np.ndarray:
     """
     Loads numpy arrays from a given folder.
 
