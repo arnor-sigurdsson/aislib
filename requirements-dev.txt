@@ -119,3 +119,4 @@ wrapt==1.12.1; python_version >= "2.7" and python_full_version < "3.0.0" or pyth
 xarray==0.18.2; python_version >= "3.7"
 zstandard==0.15.2; python_version >= "3.5"
 -e .
+-e .
