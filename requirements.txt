@@ -35,11 +35,12 @@ sympy==1.8; python_version >= "3.6"
 threadpoolctl==2.1.0; python_version >= "3.6"
 toml==0.10.2; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.3.0" and python_version >= "3.6"
 toolz==0.11.1; python_version >= "3.7"
-torch==1.8.1; python_full_version >= "3.6.2"
-torchvision==0.9.1
+torch==1.9.0; python_full_version >= "3.6.2"
+torchvision==0.10.0
 tqdm==4.61.0; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.4.0")
 typing-extensions==3.10.0.0; python_full_version >= "3.6.2"
 wrapt==1.12.1; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.4.0"
 xarray==0.18.2; python_version >= "3.7"
 zstandard==0.15.2; python_version >= "3.5"
+-e .
 -e .

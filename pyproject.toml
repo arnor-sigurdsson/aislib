@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aislib"
-version = "0.1.4-alpha"
+version = "0.1.5-alpha"
 description = ""
 authors = ["Arnor Sigurdsson"]
 
@@ -8,8 +8,8 @@ authors = ["Arnor Sigurdsson"]
 python = "^3.8"
 pandas = "^1.2.0"
 numpy = "^1.19.4"
-torch = "^1.8.1"
-torchvision = "^0.9.1"
+torch = "1.9.0"
+torchvision = "0.10.0"
 py = "^1.10.0"
 matplotlib = "^3.3.3"
 scikit-learn = "^0.24.0"
