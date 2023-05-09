@@ -31,7 +31,6 @@ def iter_loadtxt(
             for _ in range(skiprows):
                 next(infile)
             for line in infile:
-
                 if custom_splitter:
                     line = custom_splitter(line)
                 else:
@@ -68,7 +67,6 @@ def load_np_packbits_from_folder(
     if verbose:
         logger.info("Loading samples from %s", folder)
     for idx, raw_obs_path in enumerate(Path(folder).iterdir()):
-
         unpacked_obs = np.unpackbits(np.load(raw_obs_path)).astype(dtype)
         reshaped_obs = unpacked_obs.reshape(input_height, -1)
 

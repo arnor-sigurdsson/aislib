@@ -7,7 +7,6 @@ import torch.nn.functional as F
 
 
 class Swish(Module):
-
     __constants__ = ["num_parameters"]
 
     def __init__(self, num_parameters=1, init=1):
