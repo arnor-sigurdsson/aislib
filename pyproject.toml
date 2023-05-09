@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aislib"
-version = "0.1.12-alpha"
+version = "0.1.13-alpha"
 description = ""
 authors = ["Arnor Sigurdsson"]
 
