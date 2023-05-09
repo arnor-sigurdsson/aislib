@@ -9,7 +9,9 @@ def test_calc_size_after_conv_sequence():
         def __init__(self):
             super().__init__()
 
-            self.conv = nn.Conv2d(16, 16, 4, 2, 1)
+            self.conv = nn.Conv2d(
+                in_channels=16, out_channels=16, kernel_size=4, stride=2, padding=1
+            )
             self.bn = nn.BatchNorm2d(16)
             self.act = nn.ReLU(True)
 
@@ -17,13 +19,18 @@ def test_calc_size_after_conv_sequence():
             return self.act(self.bn(self.conv(x)))
 
     conv_seq = nn.Sequential(*[SimpleBlock()] * 3)
-    size = pytorch_utils.calc_size_after_conv_sequence(224, conv_seq)
+    width, height = pytorch_utils.calc_size_after_conv_sequence(
+        input_width=224, input_height=8, conv_sequence=conv_seq
+    )
 
-    assert size == 28
+    assert width == 28
+    assert height == 1
 
     conv_seq_bad = nn.Sequential(*[SimpleBlock()] * 10)
     with pytest.raises(ValueError):
-        pytorch_utils.calc_size_after_conv_sequence(224, conv_seq_bad)
+        pytorch_utils.calc_size_after_conv_sequence(
+            input_width=224, input_height=8, conv_sequence=conv_seq_bad
+        )
 
 
 @pytest.mark.parametrize(
@@ -39,10 +46,13 @@ def test_calc_size_after_conv_sequence():
         # Odd input, mixed kernels
         ((1001, 11, 11, 1), (11, 0)),
         ((1001, 10, 10, 1), (9, 4)),
-        ((1001, 11, 3, 2), (11, 11)),
+        ((1001, 11, 3, 2), (11, 8)),
     ],
 )
 def test_calc_conv_padding_needed_pass(test_input, expected):
+    """
+    input_width, kernel_size, stride, dilation
+    """
     kernel_size, padding = pytorch_utils.calc_conv_params_needed(*test_input)
 
     assert kernel_size == expected[0]

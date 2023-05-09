@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aislib"
-version = "0.1.9-alpha"
+version = "0.1.10-alpha"
 description = ""
 authors = ["Arnor Sigurdsson"]
 
@@ -18,7 +18,8 @@ sympy = "^1"
 tqdm = "^4.55"
 pandas-plink = "^2.2.4"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
+black = "^23.3.0"
 pytest = "^6.2.1"
 tox = "^3.20.1"
 flake8 = "^4"
@@ -30,7 +31,6 @@ pytest-cov = "^2.10.1"
 pynvim = "^0.4.2"
 visidata = "^2.1"
 pre-commit = "^2.9.3"
-black = "^21.5b2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
