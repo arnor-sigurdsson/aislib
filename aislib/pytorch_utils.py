@@ -11,24 +11,53 @@ def calc_size_after_conv_sequence(
 ) -> Tuple[int, int]:
     current_width = input_width
     current_height = input_height
-    for block in conv_sequence:
+    for block_index, block in enumerate(conv_sequence):
         conv_operations = [i for i in vars(block)["_modules"] if i.find("conv") != -1]
 
-        for operation in conv_operations:
+        for operation_index, operation in enumerate(conv_operations):
             conv_layer = vars(block)["_modules"][operation]
 
-            current_width = _calc_output_size(
-                size=current_width, layer=conv_layer, axis=1
-            )
-            current_height = _calc_output_size(
+            padded_height = current_height + 2 * conv_layer.padding[0]
+            padded_width = current_width + 2 * conv_layer.padding[1]
+            if any(
+                k > s
+                for k, s in zip(conv_layer.kernel_size, (padded_height, padded_width))
+            ):
+                raise ValueError(
+                    f"Kernel size of layer "
+                    f"{block_index}.{operation_index} ({operation}) "
+                    f"exceeds padded input size in one or more dimensions. "
+                    f"Original input size (hxw): {current_height}x{current_width} "
+                    f"(this is likely the source of the problem, especially if "
+                    f"error layer is conv_1). "
+                    f"Padded input size became (hxw): {padded_height}x{padded_width}. "
+                    f"Kernel size: {conv_layer.kernel_size}. "
+                    "Please adjust the kernel size to ensure the it "
+                    "does not exceed the padded input size for each dimension."
+                )
+
+            new_width = _calc_output_size(size=current_width, layer=conv_layer, axis=1)
+            new_height = _calc_output_size(
                 size=current_height, layer=conv_layer, axis=0
             )
 
-    if int(current_width) == 0 or int(current_height) == 0:
-        raise ValueError(
-            "Calculated size after convolution sequence is 0, "
-            "check the number of convolutions and their parameters."
-        )
+            if int(new_width) == 0 or int(new_height) == 0:
+                kernel_size = conv_layer.kernel_size
+                stride = conv_layer.stride
+                padding = conv_layer.padding
+                dilation = conv_layer.dilation
+
+                raise ValueError(
+                    f"Calculated size after convolution sequence is 0 for layer "
+                    f"{block_index}.{operation_index} ({operation}). "
+                    f"Input size (hxw): {current_height}x{current_width}. "
+                    f"Convolution parameters: kernel size = {kernel_size}, "
+                    f"stride = {stride}, padding = {padding}, dilation = {dilation}. "
+                    "Please adjust these parameters to ensure they are appropriate "
+                    "for the input size."
+                )
+
+            current_width, current_height = new_width, new_height
 
     return int(current_width), int(current_height)
 

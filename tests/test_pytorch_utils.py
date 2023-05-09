@@ -1,5 +1,6 @@
 import pytest
 from torch import nn
+import torch
 
 from aislib import pytorch_utils
 
@@ -16,7 +17,10 @@ def test_calc_size_after_conv_sequence():
             self.act = nn.ReLU(True)
 
         def forward(self, x):
-            return self.act(self.bn(self.conv(x)))
+            out = self.conv(x)
+            out = self.bn(out)
+            out = self.act(out)
+            return out
 
     conv_seq = nn.Sequential(*[SimpleBlock()] * 3)
     width, height = pytorch_utils.calc_size_after_conv_sequence(
@@ -25,6 +29,10 @@ def test_calc_size_after_conv_sequence():
 
     assert width == 28
     assert height == 1
+
+    input_tensor = torch.rand(1, 16, 224, 8)
+    output_tensor = conv_seq(input_tensor)
+    assert output_tensor.shape == (1, 16, 28, 1)
 
     conv_seq_bad = nn.Sequential(*[SimpleBlock()] * 10)
     with pytest.raises(ValueError):
