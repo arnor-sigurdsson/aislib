@@ -44,17 +44,17 @@ def test_calc_size_after_conv_sequence():
 @pytest.mark.parametrize(
     "test_input,expected",
     [  # Even input and kernel
-        ((1000, 10, 4, 1), (10, 3)),
-        ((1000, 10, 4, 3), (10, 12)),
+        ((1000, 10, 4, 1), (10, 1)),
+        ((1000, 10, 4, 3), (10, 0)),
         ((250, 4, 4, 1), (4, 1)),
-        # Odd input, odd kernel
-        ((1001, 11, 2, 1), (11, 5)),
-        ((1001, 11, 1, 1), (11, 5)),
-        ((1001, 11, 4, 2), (11, 10)),
-        # Odd input, mixed kernels
-        ((1001, 11, 11, 1), (10, 5)),
+        # # Odd input, odd kernel
+        ((1001, 11, 2, 1), (11, 0)),
+        ((1001, 11, 1, 1), (11, 0)),
+        ((1001, 11, 4, 2), (11, 0)),
+        # # Odd input, mixed kernels
+        ((1001, 11, 11, 1), (11, 0)),
         ((1001, 10, 10, 1), (9, 4)),
-        ((1001, 11, 3, 2), (11, 8)),
+        ((1001, 11, 3, 2), (12, 0)),
     ],
 )
 def test_calc_conv_padding_needed_pass(test_input, expected):

@@ -1,4 +1,3 @@
-import math
 from typing import Tuple, Union
 
 from sympy import Symbol
@@ -36,8 +35,10 @@ def calc_size_after_conv_sequence(
                     "does not exceed the padded input size for each dimension."
                 )
 
-            new_width = _calc_output_size(size=current_width, layer=conv_layer, axis=1)
-            new_height = _calc_output_size(
+            new_width = _calc_layer_output_size_for_axis(
+                size=current_width, layer=conv_layer, axis=1
+            )
+            new_height = _calc_layer_output_size_for_axis(
                 size=current_height, layer=conv_layer, axis=0
             )
 
@@ -62,15 +63,19 @@ def calc_size_after_conv_sequence(
     return int(current_width), int(current_height)
 
 
-def _calc_output_size(size: int, layer: nn.Module, axis: int):
+def _calc_layer_output_size_for_axis(size: int, layer: nn.Module, axis: int):
     kernel_size = layer.kernel_size[axis]
     padding = layer.padding[axis]
     stride = layer.stride[axis]
     dilation = layer.dilation[axis]
 
-    output_size = (
-        (size + (2 * padding) - dilation * (kernel_size - 1) - 1) / stride
-    ) + 1
+    output_size = conv_output_formula(
+        input_size=size,
+        padding=padding,
+        dilation=dilation,
+        kernel_size=kernel_size,
+        stride=stride,
+    )
 
     return output_size
 
@@ -81,7 +86,13 @@ def calc_conv_params_needed(
     if input_size < 0:
         raise ValueError("Got negative size for input width: %d", input_size)
 
-    target_size = math.ceil((input_size / stride))
+    target_size = conv_output_formula(
+        input_size=input_size,
+        padding=0,
+        dilation=dilation,
+        kernel_size=kernel_size,
+        stride=stride,
+    )
     for k_size in [kernel_size, kernel_size - 1, kernel_size + 1]:
         for t_size in [target_size, target_size - 1, target_size + 1]:
             padding = _solve_for_padding(
@@ -102,10 +113,19 @@ def calc_conv_params_needed(
     )
 
 
+def conv_output_formula(
+    input_size: int, padding: int, dilation: int, kernel_size: int, stride: int
+) -> int:
+    out_size = (
+        input_size + 2 * padding - dilation * (kernel_size - 1) - 1
+    ) // stride + 1
+    return out_size
+
+
 def _solve_for_padding(
     input_size: int, target_size: int, dilation: int, stride: int, kernel_size: int
 ) -> Union[int, None]:
-    p = Symbol("p", integer=True, positive=True)
+    p = Symbol("p", integer=True, nonnegative=True)
     padding = solve(
         ((input_size + (2 * p) - dilation * (kernel_size - 1) - 1) / stride + 1)
         - target_size,
