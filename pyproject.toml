@@ -5,7 +5,7 @@ description = ""
 authors = ["Arnor Sigurdsson"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.10,<4.0"
 pandas = "^2.0.1"
 numpy = "^1.2"
 torch = "^2.0.0"
@@ -16,7 +16,6 @@ scikit-learn = "^1"
 seaborn = "^0"
 sympy = "^1"
 tqdm = "^4.55"
-pandas-plink = "^2.2.4"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.3.0"
