@@ -1,6 +1,7 @@
+import copy
 import logging
 from pathlib import Path
-
+from termcolor import colored
 from tqdm import tqdm
 
 
@@ -19,6 +20,22 @@ class TQDMLoggingHandler(logging.Handler):
             self.handleError(record)
 
 
+class ColoredFormatter(logging.Formatter):
+    COLORS = {
+        logging.DEBUG: "blue",
+        logging.INFO: "green",
+        logging.WARNING: "yellow",
+        logging.ERROR: "red",
+    }
+
+    def format(self, record):
+        record_copy = copy.copy(record)
+        levelname_color = self.COLORS.get(record_copy.levelno)
+        if levelname_color:
+            record_copy.levelname = colored(record_copy.levelname, levelname_color)
+        return super().format(record_copy)
+
+
 def get_logger(name: str, tqdm_compatible: bool = False) -> logging.Logger:
     """
     Creates a logger with a debug level and a custom format.
@@ -29,6 +46,8 @@ def get_logger(name: str, tqdm_compatible: bool = False) -> logging.Logger:
     :return: Logger object.
     """
     logger_ = logging.getLogger(name)
+    logger_.handlers.clear()
+    logger_.propagate = False
     logger_.setLevel(logging.DEBUG)
 
     if tqdm_compatible:
@@ -36,8 +55,9 @@ def get_logger(name: str, tqdm_compatible: bool = False) -> logging.Logger:
     else:
         handler = logging.StreamHandler()
 
-    formatter = logging.Formatter(
-        "%(asctime)s - %(levelname)s - %(name)s - %(message)s", "%H:%M:%S"
+    formatter = ColoredFormatter(
+        fmt="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+        datefmt="%H:%M:%S",
     )
     handler.setFormatter(formatter)
     logger_.addHandler(handler)
