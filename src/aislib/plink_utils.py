@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Union
 
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder
@@ -18,7 +17,7 @@ def get_plink_raw_encoder():
 
 def plink_raw_to_one_hot(
     raw_fpath: Path,
-    output_folder: Union[str, Path],
+    output_folder: str | Path,
     encoder: OneHotEncoder,
     log_interval: int = 2000,
 ) -> None:
@@ -34,7 +33,7 @@ def plink_raw_to_one_hot(
     :param log_interval: Interval of processed observations to log no processed.
     """
 
-    with open(str(raw_fpath), "r") as infile:
+    with open(str(raw_fpath)) as infile:
         # skip header
         infile.readline()
         for idx, line in enumerate(infile):

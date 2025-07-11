@@ -1,9 +1,9 @@
-from typing import Tuple, Generator, Callable
+from collections.abc import Callable, Generator
 
 import torch
+import torch.nn.functional as F
 from torch.nn import Module
 from torch.nn.parameter import Parameter
-import torch.nn.functional as F
 
 
 class Swish(Module):
@@ -11,7 +11,7 @@ class Swish(Module):
 
     def __init__(self, num_parameters=1, init=1):
         self.num_parameters = num_parameters
-        super(Swish, self).__init__()
+        super().__init__()
         self.weight = Parameter(
             torch.Tensor(num_parameters).fill_(init), requires_grad=True
         )
@@ -20,7 +20,7 @@ class Swish(Module):
         return input_ * torch.sigmoid(self.weight * input_)
 
     def extra_repr(self):
-        return "num_parameters={}".format(self.num_parameters)
+        return f"num_parameters={self.num_parameters}"
 
 
 class Mish(Module):
@@ -65,7 +65,7 @@ class AdaHessian(torch.optim.Optimizer):
         self,
         params: torch.Tensor,
         lr: float = 0.1,
-        betas: Tuple[float, float] = (0.9, 0.999),
+        betas: tuple[float, float] = (0.9, 0.999),
         eps: float = 1e-8,
         weight_decay: float = 0.0,
         hessian_power: float = 1.0,
@@ -76,9 +76,9 @@ class AdaHessian(torch.optim.Optimizer):
         From: https://github.com/davda54/ada-hessian
         """
 
-        if not 0.0 <= lr:
+        if not lr >= 0.0:
             raise ValueError(f"Invalid learning rate: {lr}")
-        if not 0.0 <= eps:
+        if not eps >= 0.0:
             raise ValueError(f"Invalid epsilon value: {eps}")
         if not 0.0 <= betas[0] < 1.0:
             raise ValueError(f"Invalid beta parameter at index 0: {betas[0]}")
@@ -99,14 +99,14 @@ class AdaHessian(torch.optim.Optimizer):
         # across all GPUs in case of distributed training
         self.generator = torch.Generator().manual_seed(2147483647)
 
-        defaults = dict(
-            lr=lr,
-            betas=betas,
-            eps=eps,
-            weight_decay=weight_decay,
-            hessian_power=hessian_power,
-        )
-        super(AdaHessian, self).__init__(params, defaults)
+        defaults = {
+            "lr": lr,
+            "betas": betas,
+            "eps": eps,
+            "weight_decay": weight_decay,
+            "hessian_power": hessian_power,
+        }
+        super().__init__(params, defaults)
 
         for p in self.get_params():
             p.hess = 0.0
@@ -154,7 +154,7 @@ class AdaHessian(torch.optim.Optimizer):
         h_zs = torch.autograd.grad(
             grads, params, grad_outputs=zs, only_inputs=True, retain_graph=False
         )
-        for h_z, z, p in zip(h_zs, zs, params):
+        for h_z, z, p in zip(h_zs, zs, params, strict=False):
             p.hess += h_z * z  # enable accumulating hessians
 
     @torch.no_grad()
