@@ -12,6 +12,12 @@ authors = [
 requires-python = ">=3.12"
 
 dependencies = [
+    "tqdm>=4.66.4",
+    "termcolor>=3.1.0",
+]
+
+[project.optional-dependencies]
+full = [
     "pandas>=2.2.2",
     "numpy>=2.0.1",
     "torch>=2.4.0",
@@ -21,8 +27,6 @@ dependencies = [
     "scikit-learn>=1.5.1",
     "seaborn>=0.13.0",
     "sympy>=1.13.1",
-    "tqdm>=4.66.4",
-    "termcolor>=2.5.0",
 ]
 
 [dependency-groups]
