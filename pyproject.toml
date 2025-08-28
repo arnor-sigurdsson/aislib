@@ -29,6 +29,7 @@ full = [
     "sympy>=1.13.1",
 ]
 
+
 [dependency-groups]
 dev = [
     "ruff>=0.9.4",
