@@ -1,7 +1,7 @@
 from pathlib import Path
 
-import pytest
 import numpy as np
+import pytest
 
 from aislib import plink_utils
 from aislib.misc_utils import ensure_path_exists

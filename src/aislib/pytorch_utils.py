@@ -1,5 +1,3 @@
-from typing import Tuple, Union
-
 from sympy import Symbol
 from sympy.solvers import solve
 from torch import nn
@@ -7,7 +5,7 @@ from torch import nn
 
 def calc_size_after_conv_sequence(
     input_width: int, input_height: int, conv_sequence: nn.Sequential
-) -> Tuple[int, int]:
+) -> tuple[int, int]:
     current_width = input_width
     current_height = input_height
     for block_index, block in enumerate(conv_sequence):
@@ -20,7 +18,11 @@ def calc_size_after_conv_sequence(
             padded_width = current_width + 2 * conv_layer.padding[1]
             if any(
                 k > s
-                for k, s in zip(conv_layer.kernel_size, (padded_height, padded_width))
+                for k, s in zip(
+                    conv_layer.kernel_size,
+                    (padded_height, padded_width),
+                    strict=False,
+                )
             ):
                 raise ValueError(
                     f"Kernel size of layer "
@@ -82,7 +84,7 @@ def _calc_layer_output_size_for_axis(size: int, layer: nn.Module, axis: int):
 
 def calc_conv_params_needed(
     input_size: int, kernel_size: int, stride: int, dilation: int
-) -> Tuple[int, int]:
+) -> tuple[int, int]:
     if input_size < 0:
         raise ValueError("Got negative size for input width: %d", input_size)
 
@@ -124,7 +126,7 @@ def conv_output_formula(
 
 def _solve_for_padding(
     input_size: int, target_size: int, dilation: int, stride: int, kernel_size: int
-) -> Union[int, None]:
+) -> int | None:
     p = Symbol("p", integer=True, nonnegative=True)
     padding = solve(
         ((input_size + (2 * p) - dilation * (kernel_size - 1) - 1) / stride + 1)

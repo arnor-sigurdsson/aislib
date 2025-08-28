@@ -1,6 +1,6 @@
 import pytest
-from torch import nn
 import torch
+from torch import nn
 
 from aislib import pytorch_utils
 

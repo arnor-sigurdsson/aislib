@@ -1,5 +1,5 @@
+from collections.abc import Callable, Iterable
 from pathlib import Path
-from typing import Callable, Tuple, List, Iterable
 
 import numpy as np
 
@@ -27,7 +27,7 @@ def iter_loadtxt(
     """
 
     def iter_func():
-        with open(filename, "r") as infile:
+        with open(filename) as infile:
             for _ in range(skiprows):
                 next(infile)
             for line in infile:
@@ -48,7 +48,7 @@ def iter_loadtxt(
 
 def load_np_packbits_from_folder(
     folder: Path, input_height: int, dtype: type = bool, verbose: bool = False
-) -> Tuple[np.ndarray, List[str]]:
+) -> tuple[np.ndarray, list[str]]:
     """
     Note that it is faster to allocate np arrays to a python list first and then
     convert that to a np.array, as adding iteratively to a np array seems to
@@ -95,7 +95,7 @@ def load_np_arrays_from_folder(folder: Path, dtype: type = float) -> np.ndarray:
 
 def get_labels_from_folder(
     folder: Path, delimiter: str = "_", position: int = 1
-) -> List[str]:
+) -> list[str]:
     """
     Used to extract labels from files in folder, assuming the labels are in the
     filename.
@@ -117,7 +117,7 @@ def get_labels_from_folder(
 
 def get_labels_from_iterable(
     iterable: Iterable[str], delimiter: str = "_", position: int = 1
-) -> List[str]:
+) -> list[str]:
     """
     Used to extract labels from iterable of strings, assumes labels are in the
     iterable elements.
@@ -139,7 +139,7 @@ def get_labels_from_iterable(
 
 def files_to_train_test_incides(
     input_path: Path, percent_train: float = 0.9, sample_suffix=".npy"
-) -> Tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray]:
     no_obs = 0
     for i in input_path.iterdir():
         if i.suffix == sample_suffix:
