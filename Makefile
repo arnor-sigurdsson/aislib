@@ -13,6 +13,9 @@ install-dev: ## Install the package with development dependencies
 update-deps: ## Update dependencies to their latest versions
 	uv sync --upgrade
 
+update-all-deps: ## Update all dependencies including extras and dev to their latest versions
+	uv sync --all-extras --dev --upgrade
+
 test: ## Run tests
 	uv run pytest tests/ -v
 
