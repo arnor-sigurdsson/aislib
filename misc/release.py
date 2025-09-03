@@ -104,7 +104,7 @@ def git_commands(
     commands = [
         ["git", "tag", version],
         ["git", "push"],
-        ["git", "push", "origin", "--tags"],
+        ["git", "push", "origin", version],
     ]
 
     for cmd in commands:
