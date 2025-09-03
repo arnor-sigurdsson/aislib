@@ -1,5 +1,4 @@
 import argparse
-import re
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
@@ -70,16 +69,6 @@ def get_new_version(
     return VersionInfo(version=new_version, bump_type=bump_type)
 
 
-def update_init_file(version: str, init_path: Path) -> None:
-    content = init_path.read_text()
-    new_content = re.sub(
-        r'__version__\s*=\s*"[^"]*"',
-        f'__version__ = "{version}"',
-        content,
-    )
-    init_path.write_text(new_content)
-
-
 def git_commit_with_retry(files: list[Path], version: str) -> None:
     add_cmd = ["git", "add"] + [str(f) for f in files]
     commit_cmd = ["git", "commit", "-m", f"Bump version to {version}"]
@@ -103,9 +92,12 @@ def git_commit_with_retry(files: list[Path], version: str) -> None:
                 raise
 
 
-def git_commands(version: str, pyproject_path: Path, init_path: Path) -> None:
+def git_commands(
+    version: str,
+    pyproject_path: Path,
+) -> None:
     git_commit_with_retry(
-        files=[pyproject_path, init_path],
+        files=[pyproject_path],
         version=version,
     )
 
@@ -128,12 +120,6 @@ def main() -> None:
         help="Version bump type",
     )
     parser.add_argument(
-        "--init-path",
-        type=Path,
-        default=Path("src/eir/__init__.py"),
-        help="Path to __init__.py file",
-    )
-    parser.add_argument(
         "--pyproject-path",
         type=Path,
         default=Path("pyproject.toml"),
@@ -147,8 +133,6 @@ def main() -> None:
             raise FileNotFoundError(
                 f"pyproject.toml not found at {args.pyproject_path}"
             )
-        if not args.init_path.exists():
-            raise FileNotFoundError(f"__init__.py not found at {args.init_path}")
 
         version_info = get_new_version(
             bump_type=args.bump_type,
@@ -156,13 +140,9 @@ def main() -> None:
         )
         print(f"Bumping version to: {version_info.version}")
 
-        update_init_file(version=version_info.version, init_path=args.init_path)
-        print(f"Updated version in {args.init_path}")
-
         git_commands(
             version=version_info.version,
             pyproject_path=args.pyproject_path,
-            init_path=args.init_path,
         )
         print("Successfully completed all git commands")
 
