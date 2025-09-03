@@ -43,6 +43,7 @@ dev = [
     "pynvim>=0.5.0",
     "visidata>=3.0.2",
     "pre-commit>=3.8.0",
+    "tomlkit>=0.13.3",
 ]
 
 [tool.hatch.build.targets.wheel]
